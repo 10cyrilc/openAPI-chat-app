@@ -1,12 +1,11 @@
 import express from "express";
 import axios from "axios";
-
 const router = express.Router();
+import jwt from "jsonwebtoken";
 
 router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
-
     const chatEngineResponse = await axios.get(
       "https://api.chatengine.io/users/me",
       {
@@ -17,32 +16,26 @@ router.post("/login", async (req, res) => {
         },
       }
     );
-
-    res.status(200).json({ response: chatEngineResponse.data });
-  } catch (error) {
-    console.error("error", error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-router.post("/signup", async (req, res) => {
-  try {
-    const { username, password } = req.body;
-
-    const chatEngineResponse = await axios.post(
-      "https://api.chatengine.io/users/",
+    const data = chatEngineResponse.data;
+    const token = jwt.sign(
       {
-        username: username,
-        secret: password,
+        username: data.username,
+        is_authenticated: data.is_authenticated,
+        password: password,
       },
+      process.env.JWT_SECRET,
       {
-        headers: { "Private-Key": process.env.PRIVATE_KEY },
+        expiresIn: "1h",
       }
     );
-
-    res.status(200).json({ response: chatEngineResponse.data });
+    console.log(data);
+    res.status(200).json({
+      response: {
+        token: token,
+      },
+    });
   } catch (error) {
-    console.error("error", error.message);
+    console.error("error", error);
     res.status(500).json({ error: error.message });
   }
 });
