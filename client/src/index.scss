@@ -462,6 +462,7 @@ body,
   height: calc(50px) !important;
 }
 
+
 .ce-chat-avatars .ce-avatar {
   width: 40px !important;
   height: 40px !important;
@@ -550,3 +551,12 @@ body,
 ::-webkit-scrollbar-track:hover {
   background: $primary-700;
 }
+
+.button:hover{
+  cursor: pointer;
+}
+
+// .custom-avatar-settings{
+//   display:"flex"; 
+//   // justifyContent: "space-between";
+// }
